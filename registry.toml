@@ -1,4 +1,4 @@
-# registry.toml -- the Pets Registry index (kirn resolves names against this).
+﻿# registry.toml -- the Pets Registry index (kirn resolves names against this).
 #
 # Layout convention (matches the ecosystem plan, section 14.2 of docs/COCO_PLAN.md):
 #   - There are ZERO built-in pets (section 13.1). Editing this file to hardcode a pet
@@ -9,7 +9,7 @@
 #     [https://]gitlab.com|codeberg.com/<user>/<repo>.
 #
 # Each entry mirrors the metadata `kirn new pets` prompts + the Auto Build & Release
-# workflow template stored in .github/workflows/pets-build-release.yml.
+# workflow template stored in .github/workflows/kirn-pets-release.yml.
 
 # Schema (authoritative; kept minimal and stable):
 #   [pets."<name>"]

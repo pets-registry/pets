@@ -12,7 +12,7 @@ only the **name → repo index** so that `kirn i <name>` can resolve a short reg
 
    That scaffolds the **default hello-world pets template** and **auto-initializes the
    Auto Build & Release workflow** — in *the developer's repo*, on their own GitHub repo:
-   `.github/workflows/autobuild-release.yml`. Nothing is added to this registry by that
+   `.github/workflows/kirn-pets-release.yml`. Nothing is added to this registry by that
    action.
 
 2. The developer **pushes the pet to their GitHub account** and tags it (`v*`). Their

@@ -1,40 +1,37 @@
-# Pets Registry — `pets`
+﻿# Pets Registry — the `pets` org index
 
-The **Pets Registry** for the [Kirn language](https://github.com/kirn-lang/kirn): the
-ecosystem where Kirn **pets** (pydoc/godoc-spirit inline-doc'd libraries and tools) are
-discovered, installed and updated.
+This org is the **pets registry** for the [Kirn language](https://github.com/rkriad585/kirn).
+It does **not** hold any pets itself, and it does **not** run any build workflow. It is
+only the **name → repo index** so that `kirn i <name>` can resolve a short registry name.
 
-- **Landing / search UI:** https://pets-registry.github.io
-- **docs (learn Kirn / k-docs):** https://rkriad585.github.io/kirn
+## How it actually works (the flow)
 
-## What this repo is
+1. A **pet developer** runs, in their own repo:
 
-- `registry.toml` — the registry **index** that `kirn i <name>` resolves against.
-- `.github/workflows/pets-build-release.yml` — the **Auto Build & Release** template that
-  `kirn new pets <name>` auto-initializes in every pets repo: **tag-triggered**; on a pushed
-  `v*` tag the workflow runs `kirn build pets` and publishes a release artifact + rust-style
-  installers, so anyone can install the pet with:
+     `kirn new pets <petname>`
 
-  ```sh
-  kirn i <name>                     # by registry name
-  kirn i <user>/<repo>              # by owner/repo
-  kirn i [https://]gitlab.com/<user>/<repo>   # third-party git host
-  ```
+   That scaffolds the **default hello-world pets template** and **auto-initializes the
+   Auto Build & Release workflow** — in *the developer's repo*, on their own GitHub repo:
+   `.github/workflows/autobuild-release.yml`. Nothing is added to this registry by that
+   action.
 
-## No built-in pets
+2. The developer **pushes the pet to their GitHub account** and tags it (`v*`). Their
+   repo's own tag-triggered *Auto Build & Release* workflow then `kirn build pets`'s and
+   publishes a tagged release artifact.
 
-Per plan section 13.1 there are **no built-in pets**. Std pets live in their own repos on
-this org and are pushed + tagged; `kirn setup` auto-installs them **globally**
-(`~/.kirn/pets`) so they work on any project. Nothing in this index is hardcoded — it is
-populated by the Auto Build & Release workflow on tag.
+3. Anyone else installs it:
 
-## Adding a pets
+   - `kirn i <name>`                 — registered name → resolved against this index
+   - `kirn i <user>/<repo>`          — full owner/repo form
+   - `kirn i [https://]<git-host>/<user>/<repo>` — third-party git host (gitlab/codeberg)
 
-1. `kirn new pets <name>` — scaffolds a template + the Auto Build & Release workflow.
-2. Push it to `https://github.com/pets-registry/<name>`.
-3. Tag it (`v*`) — the workflow builds, registers it on this index, and publishes an
-   installable release. Done; nothing to hand-edit here.
+## What lives here (nothing else)
 
-## License
+- `registry.toml` — the index `kirn i <name>` resolves against. **Empty**: per §13.1
+  there are no built-in pets. A pet becomes a *registered name* only when its repo joins
+  this org as a tagged release.
+- `README.md` — this landing (mirrors the `pets-registry.github.io` pages site).
+- `LICENSE.txt` — MIT (2026 Kirn).
 
-MIT — see `LICENSE`. © 2026 Kirn (pets-registry).
+The **workflow template that `kirn new pets` auto-initializes** lives in `src/tools/…`
+template scaffolding in the main repo (the ding pet template), not here.

@@ -1,0 +1,35 @@
+# registry.toml -- the Pets Registry index (kirn resolves names against this).
+#
+# Layout convention (matches the ecosystem plan, section 14.2 of docs/COCO_PLAN.md):
+#   - There are ZERO built-in pets (section 13.1). Editing this file to hardcode a pet
+#     is forbidden; pets are REGISTERED by being pushed to this org as a tagged release,
+#     and `kirn setup` auto-installs the std pets globally (they live at ~/.kirn/pets).
+#   - Name resolution is done by `kirn i <name>` through this registry, OR by
+#     `kirn i <user>/<repo>`, OR by a full third-party URL
+#     [https://]gitlab.com|codeberg.com/<user>/<repo>.
+#
+# Each entry mirrors the metadata `kirn new pets` prompts + the Auto Build & Release
+# workflow template stored in .github/workflows/pets-build-release.yml.
+
+# Schema (authoritative; kept minimal and stable):
+#   [pets."<name>"]
+#     repo        = "owner/repo"              # required -- where kirn i <name> resolves
+#     latest      = "v1.0.0"                  # newest tagged release (set by Auto Build & Release)
+#     license     = "MIT"
+#     author      = "Some User"
+#     website     = "https://..."             # optional
+#     branch      = "main"                    # optional, default main
+#
+# The registry index is populated by the Auto Build & Release workflow when a pets repo
+# under this org publishes a new `v*` tag; it is never hand-edited for pet content.
+
+[registry]
+name        = "Pets Registry"
+org         = "pets-registry"
+org_url     = "https://github.com/pets-registry"
+landing     = "https://pets-registry.github.io"
+docs        = "https://rkriad585.github.io/kirn"
+branch      = "main"
+
+# --- std pets of the Kirn standard ecosystem (registered on push; none hardcoded) ---
+# (intentionally empty: section 13.1 -- no built-in pets; each std pet is its own repo)

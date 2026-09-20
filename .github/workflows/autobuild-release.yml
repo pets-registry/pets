@@ -1,0 +1,65 @@
+# Auto Build & Release — the tag-triggered workflow that `kirn new pets <name>` auto-initializes
+# in every pets repo, and that this registry repo mirrors verbatim (mirror-locked §14.2).
+#
+# Trigger: any pushed `v*` tag (per docs/COCO_PLAN.md §14.2).
+#   - Windows PowerShell:  `irm https://raw.githubusercontent.com/rkriad585/kirn/main/installer.ps1 | iex`
+#   - POSIX:               `curl -fsSL https://raw.githubusercontent.com/rkriad585/kirn/main/installer.sh | sh`
+#
+# On trigger it: builds the pets (`kirn build pets`), builds the rust-style one-shot
+# installers, and publishes a tagged GitHub release so anyone can install with:
+#   `kirn i <name>`  (registry name) | `kirn i <user>/<repo>` | `kirn i [https://]<git-host>/<user>/<repo>`
+# then `kirn self-update` applies the newest release on any platform.
+
+name: Auto Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    name: kirn build pets + rust-style installers + publish
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Kirn (std, no built-in pets — §13.1)
+        run: |
+          irm https://raw.githubusercontent.com/rkriad585/kirn/main/installer.ps1 | iex
+        shell: pwsh
+
+      - name: kirn build pets
+        run: kirn build pets
+
+      - name: Build rust-style installer (this OS)
+        run: |
+          kirn build --installer
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kirn-installer-${{ matrix.os }}
+          path: |
+            installer.ps1
+            installer.sh
+
+      - name: Create tagged GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            installer.ps1
+            installer.sh
+          generate_release_notes: true
+
+      - name: self-update primer (documented; runs on apply)
+        run: kirn self-update --check
+        shell: pwsh
+        continue-on-error: true
